@@ -25,4 +25,4 @@ unzip' = foldr f ([],[])
                   where f (a,b) (c,d) = (a : c , b : d)
 
 null' :: [a] -> Bool
-null' xs =  
+null' = foldr (\a b -> False) True
