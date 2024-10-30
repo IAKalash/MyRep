@@ -26,3 +26,6 @@ unzip' = foldr f ([],[])
 
 null' :: [a] -> Bool
 null' = foldr (\a b -> False) True
+
+intersperse' :: a -> [a] -> [a]
+intersperse' a xs = foldr (\x y -> x : a : y) [] (init xs) ++ [last xs]
