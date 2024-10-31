@@ -1,6 +1,8 @@
-len :: [a] -> Int
-len [] = 0
-len (x : xs) = 1 + len xs
+import Data.List
+
+len' :: [a] -> Int
+len' [] = 0
+len' (x : xs) = 1 + len' xs
 
 map' :: ([a] -> [b]) -> [[a]] -> [[b]]
 map' f (x : xs) = f x : map' f xs
@@ -17,17 +19,8 @@ collatz :: Int -> [Int]
 collatz n | n <= 0 = error "incorrect input"
           | n == 1 = [n]
           | even n = n : collatz (div n 2)
-          | odd n = n : collatz (n * 3 + 1)
+          | odd n = n : collatz (n * 3 + 1) 
 
-
-f0 :: [a] -> Int -> [[a]]
-f0 xs 0 = []
-f0 (x:xs) y = (xs++[x]) : f0 (xs ++ [x]) (y - 1)  
-
-permutations :: [a] -> [[a]]
-permutations [] = [[]]
-permutations [x] = [[x]]
-permutations [x,y] = f0 [x,y] (len [x,y])
-permutations (x : xs) = map' f1 (map2 (x :) (f0 xs (len xs)) (f0 (reverse xs) (len xs)))
-                        where f1 :: [a] -> [[a]]
-                              f1 [x1] = f0 [x1] (len(x:xs))
+permutations' :: (Eq a) => [a] -> [[a]]
+permutations' [] = [[]]
+permutations' xs = [a:x | a <- xs, x <- (permutations' (filter (\x -> x /= a) xs))]
