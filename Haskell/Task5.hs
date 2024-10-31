@@ -39,8 +39,11 @@ group' (x : y : xs) | x == y = [x,y] : group' xs
 
 
 lagrange :: [(Double, Double)] -> (Double -> Double)
-lagrange points = \x -> foldl (\acc (x_i,y_i) -> acc + (y_i * l x_i x)) 0 points
-    where l x_i x = foldl (\acc (x_j, _) -> if x_i == x_j then acc else acc * (x - x_j) / (x_i - x_j)) 1 points
+lagrange list = \x -> foldl (\acc (x_i,y_i) -> acc + (y_i * l x_i x)) 0 list
+                    where l x_i x = foldl (\acc (x_j, _) -> 
+                                            if x_i == x_j 
+                                            then acc 
+                                            else acc * (x - x_j) / (x_i - x_j)) 1 list
 
 
 
