@@ -31,7 +31,7 @@ null' = foldr (\a b -> False) True
 intersperse' :: a -> [a] -> [a]
 intersperse' a xs = foldr (\x y -> x : a : y) [] (init xs) ++ [last xs]
 
-group' :: Eq a => [a] -> [[a]]                 -- (Не нашёл способа решить через свёртку)
+group' :: Eq a => [a] -> [[a]]                 
 group' [] = []
 group' (x : y : xs) | x == y = [x,y] : group' xs
                     | otherwise = [x] : group' (y:xs)
