@@ -1,1 +1,10 @@
-3 qwerty3 string6 good1 a3 ab2 hello5 world
+1
+2
+-1
+2
+5
+-1
+-1
+5
+-1
+-1
