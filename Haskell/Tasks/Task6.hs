@@ -1,5 +1,4 @@
 import Data.Char
-import Text.Read (Lexeme(String))
 
 encrypt :: Int -> Char -> Char
 encrypt n sym | isLower sym = chr (97 + mod (ord sym - 97 + n) 26)
@@ -44,7 +43,16 @@ longPref (s : str) | isEq (map head (s:str)) = head s : longPref (map tail (s:st
                                        | otherwise = False
                          isEq x = True
 
+delete :: [String] -> String -> [String]
+delete [] del = []
+delete (x:xs) del | map toLower x == map toLower del = delete xs del
+                  | otherwise = x : delete xs del
+
 anagramsFor :: String -> [String] -> [String]
-anagramsFor word list = foldl (func) word list
-        where func (x:xs) y | isAnagram x y = 
-                            | otherwise = []
+anagramsFor word list = delete (filter (isAnagram word) list) word
+
+mySplit :: Char -> String -> [String]
+mySplit sym list = delete (split list) []
+      where split [] = [""]
+            split (x : xs) | sym == x = "" : split xs
+                           | otherwise = (x : head (split xs)) : tail (split xs)
