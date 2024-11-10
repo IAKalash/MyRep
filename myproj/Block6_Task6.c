@@ -11,7 +11,7 @@ typedef struct Tokens_s
 // str: строка, в которой нужно искать слова
 // delims: все символы-разделители в виде строки
 void tokensSplit(Tokens *tokens, const char *str, const char *delims) {
-
+    
 }
 // удаляет все ресурсы внутри tokens
 void tokensFree(Tokens *tokens) {
@@ -24,9 +24,12 @@ int main(void)
     freopen("output.txt", "w", stdout);
 
     Tokens tokens;
-    *tokens.arr = 0;
+    char str[1000000];
+    *tokens.arr = NULL;
 
-    
+    scan("%s", &str);
+
+    tokensSplit(&tokens, str, ".,;:");
 
     fclose(stdin);
     fclose(stdout);
