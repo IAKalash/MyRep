@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    FILE *in = fopen("4.in", "rb");
+    FILE *in = fopen("input.txt", "rb");
     FILE *out = fopen("output.txt", "wb");
 
     long a, b;
