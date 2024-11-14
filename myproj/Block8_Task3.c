@@ -19,7 +19,6 @@ void readfile(file *fl, FILE *in) {
     fread(&fl->time, 8, 1, in);
     fread(&fl->change, 8, 1, in);
     fread(&fl->hid, 1, 1, in);
-    fl->next = NULL;
 }
 
 void writefile(file *fl, FILE *out)
@@ -40,33 +39,17 @@ int checkfile(file *fl, long long A, long long B) {
     return 0;
 }
 
-file *addfile(file *head, FILE *in, long long A, long long B)
+file *addfile(file *last, FILE *in, long long A, long long B)
 {
     file *node = (file *)malloc(sizeof(file));
     readfile(node, in);
 
-    file *prev = NULL;
-    file *next = head;
     if (checkfile(node, A, B)) {
-        while (1)
-        {
-            if (next == NULL || strcmp(node->name, next->name) < 0) {
-                if (prev == NULL) {
-                    node->next = next;
-                    return node;
-                }
-                else {
-                    prev->next = node;
-                    node->next = next;
-                    return head;
-                }
-            }
-            else {
-                prev = next;
-                next = next->next;
-            }
-        }
+        node->next = last->next;
+        last->next = node;
+        return node;
     }
+    return last;
 }
 
 void printfiles(file *head, FILE *out)
@@ -77,14 +60,12 @@ void printfiles(file *head, FILE *out)
     }
 }
 
-void reverse(int *num)
-{
-    *num = (*num >> 24 & 0b00000000000000000000000011111111) | (*num << 24 & 0b11111111000000000000000000000000) | (*num >> 8 & 0b00000000000000001111111100000000) | (*num << 8 & 0b00000000111111110000000000000000);
-}
-
-void printfile (file *fl) { //TEST!!!!!!!!!!!!!!!!!!!
-    printf("!!!!!!!!!!!!!!!!");
-    printf("%s\n", fl->name);
+void sort(file *head) {
+    file 
+    file *next = head->next;
+    while (next != NULL) {
+        if (strcmp)
+    }
 }
 
 int main(void)
@@ -101,6 +82,7 @@ int main(void)
 
     file fl1;
     fl1.dir = 49;
+    fl1.next = NULL;
     int count = 0;
 
     for (int i = 0; i < n; ++i) {
@@ -112,10 +94,13 @@ int main(void)
     }
 
     file *head = &fl1;
+    file *last = &fl1;
 
     for (int i = count; i < n; ++i) {
-        head = addfile(head, in, A, B);
+        last = addfile(last, in, A, B);
     }
+
+    sort(head);
 
     printfiles(head, out);
 

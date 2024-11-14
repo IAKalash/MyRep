@@ -11,7 +11,6 @@ int main(void)
     fread(&a, 4, 1, in);
     fread(&b, 4, 1, in);
 
-    printf("%d %d %d\n", a, b, a + b);
     if (a > 0) {
         a = ((long long)a + b) / 2;
     }
