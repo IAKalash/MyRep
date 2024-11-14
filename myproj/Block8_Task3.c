@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <string.h>
 
 typedef struct file {
     char name[20];
@@ -26,34 +27,44 @@ void writefile(file *fl, FILE *out)
     fwrite(fl, 47, 1, out);
 }
 
-file *addfile(file *head, FILE *in)
+int checkfile(file *fl, long long A, long long B) {
+    if (fl->dir == 0) {
+        if (fl->hid == 0) {
+            if (fl->time >= A) {
+                if (fl->change <= B) {
+                    return 1;
+                }
+            }
+        }
+    }
+    return 0;
+}
+
+file *addfile(file *head, FILE *in, long long A, long long B)
 {
     file *node = (file *)malloc(sizeof(file));
     readfile(node, in);
 
     file *prev = NULL;
     file *next = head;
-
-    while (1)
-    {
-        if (next == NULL) //|| node->key < next->key)
+    if (checkfile(node, A, B)) {
+        while (1)
         {
-            if (prev != NULL)
-            {
-                prev->next = node;
-                node->next = next;
-                return head;
+            if (next == NULL || strcmp(node->name, next->name) < 0) {
+                if (prev == NULL) {
+                    node->next = next;
+                    return node;
+                }
+                else {
+                    prev->next = node;
+                    node->next = next;
+                    return head;
+                }
             }
-            else
-            {
-                node->next = head;
-                return node;
+            else {
+                prev = next;
+                next = next->next;
             }
-        }
-        else
-        {
-            prev = next;
-            next = next->next;
         }
     }
 }
@@ -64,24 +75,6 @@ void printfiles(file *head, FILE *out)
     {
         writefile(node, out);
     }
-}
-
-int checkfile(file *fl, long long A, long long B) {
-    if (fl->dir == '0') {
-        printf("1");
-        if (fl->hid == 48) {
-            printf("2");
-            if (fl->time >= A) {
-                printf("3");
-                if (fl->change <= B) {
-                    printf("4\n");
-                    return 1;
-                }
-            }
-        }
-    }
-    printf("fuckup\n");
-    return 0;
 }
 
 void reverse(int *num)
@@ -110,31 +103,21 @@ int main(void)
     fl1.dir = 49;
     int count = 0;
 
-    printf("1\n");
-
     for (int i = 0; i < n; ++i) {
-        printf("cycle\n");
         readfile(&fl1, in);
-        printf("%c", fl1.dir);
         ++count;
         if (checkfile(&fl1, A, B)) {
             break;
         }
     }
 
-    printf("2\n");
-
     file *head = &fl1;
 
     for (int i = count; i < n; ++i) {
-        addfile(head, in);
+        head = addfile(head, in, A, B);
     }
 
-    printf("3\n");
-
     printfiles(head, out);
-
-    printf("4\n");
 
     fclose(in);
     fclose(out);
