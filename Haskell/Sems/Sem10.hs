@@ -47,6 +47,6 @@ treeSize :: Tree a -> Int
 treeSize Empty = 0
 treeSize (Node _ a b) = 1 + treeSize a + treeSize b
 
-treeSum :: Tree a -> Int
+treeSum :: Num a => Tree a -> a
 treeSum Empty = 0
 treeSum (Node n x y) = n + treeSum x + treeSum y
