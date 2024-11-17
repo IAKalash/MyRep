@@ -19,9 +19,6 @@
         "ostream": "cpp",
         "streambuf": "cpp",
         "type_traits": "cpp",
-        "typeinfo": "cpp",
-        "stdio.h": "c",
-        "malloc.h": "c",
-        "stdint.h": "c"
+        "typeinfo": "cpp"
     }
 }

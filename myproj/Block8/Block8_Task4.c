@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <malloc.h>
 
-int read(FILE *in) {
-    int type, count;
+int read(FILE *in, int size) {
+    int type, count = 2;
     fread(&type, 1, 1, in);
-    char sym;
+    char sym = 0;
     printf("    \"");
     fread(&sym, 1, 1, in);
     do {
@@ -35,9 +35,7 @@ int read(FILE *in) {
         ++count;
     }
     else if (type == 10) { //null
-        fread(&sym, 1, 1, in);
         printf("null");
-        ++count;
     }
     else if (type == 16) { //int32
         int num;
@@ -51,13 +49,15 @@ int read(FILE *in) {
         printf("%lld", num);
         count += 8;
     }
+    if (size != count)
+        printf(",");
     return count;
 }
 
 int main(void)
 {
     FILE *in = fopen("1.in", "rb");
-    FILE *out = fopen("output.txt", "w");
+    freopen("output.txt", "w", stdout);
 
     int size;
     fread(&size, 4, 1, in);
@@ -66,12 +66,12 @@ int main(void)
     printf("{\n");
 
     while (size != 0) {
-        size -= read(in);
-        printf(",\n");
+        size -= read(in, size);
+        printf("\n");
     }
 
-    printf("\n}");
+    printf("}");
 
     fclose(in);
-    fclose(out);
+    fclose(stdout);
 }
