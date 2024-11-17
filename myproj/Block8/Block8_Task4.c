@@ -28,6 +28,7 @@ int read(FILE *in, int size) {
         printf("%s", str);
         printf("\"");
         count += len + 4;
+        free(str);
     }
     else if (type == 8) {  //bool
         fread(&sym, 1, 1, in);
