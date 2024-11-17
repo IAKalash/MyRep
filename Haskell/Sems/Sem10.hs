@@ -9,8 +9,7 @@ isSym (Triangle a b c) | a == b = True
                        | c == b = True
                        | otherwise = False
 
-data Expr = Var | Num Integer | Add Expr Expr | Sub Expr Expr
-data Expr2 = Maybe Expr 
+data Expr = Var | Num Integer | Add Expr Expr | Sub Expr Expr 
 
 instance Show Expr where
     show Var = "x"

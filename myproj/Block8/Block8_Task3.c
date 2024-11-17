@@ -23,7 +23,12 @@ void readfile(file *fl, FILE *in) {
 
 void writefile(file *fl, FILE *out)
 {
-    fwrite(fl, 47, 1, out);
+    fwrite(&fl->name, 21, 1, out);
+    fwrite(&fl->size, 8, 1, out);
+    fwrite(&fl->dir, 1, 1, out);
+    fwrite(&fl->time, 8, 1, out);
+    fwrite(&fl->change, 8, 1, out);
+    fwrite(&fl->hid, 1, 1, out);
 }
 
 int checkfile(file *fl, long long A, long long B) {
@@ -39,17 +44,37 @@ int checkfile(file *fl, long long A, long long B) {
     return 0;
 }
 
-file *addfile(file *last, FILE *in, long long A, long long B)
+file *addfile(file *head, FILE *in, long long A, long long B)
 {
     file *node = (file *)malloc(sizeof(file));
     readfile(node, in);
 
     if (checkfile(node, A, B)) {
-        node->next = last->next;
-        last->next = node;
-        return node;
+        file *next;
+        file *curr = NULL;
+        for (file *next = head; next != NULL; next = next->next)
+        {
+            if (strcmp(node->name, next->name) <= 0)
+                break;
+            else
+                curr = next;
+        }
+        if (curr == NULL) {
+            node->next = head;
+            return node;
+        }
+        else if (next == NULL) {
+            node->next = NULL;
+            curr->next = node;
+            return head;
+        }
+        else {
+            node->next = curr->next;
+            curr->next = node;
+            return head;
+        }
     }
-    return last;
+    return head;
 }
 
 void printfiles(file *head, FILE *out)
@@ -60,17 +85,9 @@ void printfiles(file *head, FILE *out)
     }
 }
 
-void sort(file *head) {
-    file 
-    file *next = head->next;
-    while (next != NULL) {
-        if (strcmp)
-    }
-}
-
 int main(void)
 {
-    FILE *in = fopen("1.in", "rb");
+    FILE *in = fopen("input.txt", "rb");
     FILE *out = fopen("output.txt", "wb");
 
     int n;
@@ -94,13 +111,10 @@ int main(void)
     }
 
     file *head = &fl1;
-    file *last = &fl1;
 
     for (int i = count; i < n; ++i) {
-        last = addfile(last, in, A, B);
+        head = addfile(head, in, A, B);
     }
-
-    sort(head);
 
     printfiles(head, out);
 
