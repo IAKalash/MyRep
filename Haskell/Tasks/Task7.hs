@@ -5,15 +5,15 @@ data BoolExpr = BoolLit Bool | Not BoolExpr | And BoolExpr BoolExpr | Or BoolExp
 
 instance Show Expr where
   show (Num n) = show n
-  show (Add ex1 ex2) = "(" ++ show ex1 ++ " + " ++ show ex2 ++ ")"
-  show (Sub ex1 ex2) = "(" ++ show ex1 ++ " - " ++ show ex2 ++ ")"
+  show (Add ex1 ex2) = "(" ++ show ex1 ++ "+" ++ show ex2 ++ ")"
+  show (Sub ex1 ex2) = "(" ++ show ex1 ++ "-" ++ show ex2 ++ ")"
 
 instance Show BoolExpr where
     show (BoolLit n) = show n
     show (Not ex) = "not " ++ show ex 
     show (And ex1 ex2) = show ex1 ++ " && " ++ show ex2 
     show (Or ex1 ex2) = show ex1 ++ " || " ++ show ex2 
-    show (Eq ex1 ex2) = show ex1 ++ " == " ++ show ex2 
+    show (Eq ex1 ex2) = show ex1 ++ " = " ++ show ex2 
     show (Bigger ex1 ex2) = show ex1 ++ " > " ++ show ex2 
 
 eval :: Expr -> Integer
@@ -31,3 +31,31 @@ boolEval (And ex1 ex2) = boolEval ex1 && boolEval ex2
 boolEval (Or ex1 ex2) = boolEval ex1 || boolEval ex2
 boolEval (Eq ex1 ex2) = eval ex1 == eval ex2
 boolEval (Bigger ex1 ex2) = eval ex1 > eval ex2
+
+
+
+data Bin = End | O Bin | I Bin
+    deriving (Show, Eq)
+
+inc :: Bin -> Bin
+inc End = I End
+inc (O b) = I b
+inc (I b) = O (inc b)
+
+
+fromBin :: Bin -> Int
+fromBin (End) = 0
+fromBin (O ex) = (fromBin ex) * 2
+fromBin (I ex) = 1 + (fromBin ex) * 2 
+
+toBin :: Int -> Bin
+toBin 0 = O End
+toBin 1 = I End
+toBin n | mod n 2 == 1 = I (toBin (div n 2))
+        | otherwise = O (toBin (div n 2))
+
+pls :: Bin -> Bin -> Bin
+pls = undefined
+
+mlt :: Bin -> Bin -> Bin
+mlt = undefined
