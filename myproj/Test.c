@@ -11,8 +11,8 @@ int main(void)
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 
-    int a = 0x020100aa;
-    reverse(&a);
+    int a = 0b00000001;
+    a >>= 1;
     printf("%llx", a);
 
     fclose(stdin);

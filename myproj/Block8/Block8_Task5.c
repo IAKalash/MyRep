@@ -36,12 +36,23 @@ int main(void)
     }
 
     fread(&txt, 4, 1, in);
-    char mask = 0b10000000;
+    unsigned char mask = 0b00000001, str = 0;
 
     for (int i = 0; i < txt; ++i) {
         fread(&len, 2, 1, in);
-        //вывод по формату из arr
+        for (int k = 0; k < arr[len]->len; ++k) {
+            if (mask == 0) {
+                fwrite(&str, 1, 1, out);
+                mask = 0b00000001;
+                str = 0;
+            }
+            if (arr[len]->data[k] == 1) {
+                str |= mask;
+            }
+            mask <<= 1;
+        }
     }
+    fwrite(&str, 1, 1, out);
 
     free(arr);
 
