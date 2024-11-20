@@ -31,12 +31,13 @@ null' = foldr (\a b -> False) True
 intersperse' :: a -> [a] -> [a]
 intersperse' a xs = foldr (\x y -> x : a : y) [] (init xs) ++ [last xs]
 
-group' :: Eq a => [a] -> [[a]]                 
-group' [] = []
-group' (x : y : xs) | x == y = [x,y] : group' xs
-                    | otherwise = [x] : group' (y:xs)
-
-
+group :: (Eq a) => [a] -> [[a]]
+group = foldr f []
+  where
+    f x [] = [[x]]
+    f x (y : yss)
+      | x == head y = (x : y) : yss
+      | otherwise = [x] : y : yss
 
 lagrange :: [(Double, Double)] -> (Double -> Double)
 lagrange list = \x -> foldl (\acc (x_i,y_i) -> acc + (y_i * l x_i x)) 0 list
