@@ -40,16 +40,14 @@ data Bin = End | O Bin | I Bin
 instance Eq Bin where
 
   End == End = True
-  End == ex = False
-  ex == End = False
+
+  (O ex) == End = ex == End
+  End == (O ex) = End == ex
   
   (I ex1) == (O ex2) = False
   (O ex1) == (I ex2) = False
   (I ex1) == (I ex2) = ex1 == ex2
   (O ex1) == (O ex2) = ex1 == ex2
-
-  -- (ex1 (O End)) == ex2 = (ex1 End) == ex2
-  -- ex1 == (ex2 (O End)) = ex1 == (ex2 End)
 
   
 
@@ -103,5 +101,3 @@ mlt ex (I End) = ex
 
 mlt (ex1) (O ex2) = O (mlt ex1 ex2)
 mlt (ex1) (I ex2) = pls ex1 (O (mlt ex1 ex2))
-
-
