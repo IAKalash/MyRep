@@ -1,4 +1,5 @@
 import Data.Char
+import Data.List
 
 encrypt :: Int -> Char -> Char
 encrypt n sym | isLower sym = chr (97 + mod (ord sym - 97 + n) 26)
@@ -29,7 +30,7 @@ delVow str = del str "aeiouyAEIOUY"
                          | otherwise = x : del xs vow
 
 isAnagram :: String -> String -> Bool
-isAnagram str1 str2 | sum (map (ord . toLower) str1) == sum (map (ord . toLower) str2) = True
+isAnagram str1 str2 | sort (map toLower str1) == sort (map toLower str2) = True
                     | otherwise = False
 
 
