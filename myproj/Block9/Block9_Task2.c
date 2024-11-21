@@ -3,18 +3,33 @@
 
 int partition(int *a, int n, int pivot) {
     int i = 0, j = n - 1, k, temp;
-    // while (a[i] >= pivot)
-    //     ++i;
-    // while (a[j] <= pivot)
-    //     --j;
-    while (i <= j) {
-        temp = a[i];
-        a[i] = a[j];
-        a[j] = temp;
-        ++i;
-        --j;
+    while (i != pivot) {
+        if (a[i] > pivot) {
+            if (a[j] < pivot) {
+                temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+            else {
+                --j;
+            }
+        }
+        else if (a[j] < pivot) {
+            if (a[i] > pivot) {
+                temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+            else {
+                ++i;
+            }
+        }
+        else {
+            ++i;
+            --j;
+        }
     }
-    return 0;
+    return j + 1;
 }
 
 int main(void)
