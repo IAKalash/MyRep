@@ -36,6 +36,7 @@ isAnagram str1 str2 | sum (map (ord . toLower) str1) == sum (map (ord . toLower)
 longPref :: [String] -> String
 longPref [] = []
 longPref [x] = x
+longPref str | [] `elem` str = []
 longPref (s : str) | isEq (map head (s:str)) = head s : longPref (map tail (s:str))
                    | otherwise = []
                    where isEq [] = False
