@@ -2,7 +2,8 @@
 #include <malloc.h>
 
 void radixSort(unsigned long long *arr, int len) {
-
+    
+    
 }
 
 int main(void)
@@ -20,7 +21,11 @@ int main(void)
         fread(&arr[i], 8, 1, in);
     }
 
-    radixSort(arr, n - 1);
+    radixSort(arr, n);
+
+    for (int i = 0; i < n; ++i) {
+        fwrite(&arr[i], 8, 1, out);
+    }
 
     fclose(in);
     fclose(out);
