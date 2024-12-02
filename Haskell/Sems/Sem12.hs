@@ -64,9 +64,8 @@ cond = do
 while :: IO Bool -> IO () -> IO ()
 while cond op = do
                     bool <- cond 
-                    if bool
-                        then 
-                            do
+                    if bool then 
+                                do
                                 op
                                 while cond op
                         else
