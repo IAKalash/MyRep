@@ -2,9 +2,7 @@ data Tree a = Empty | Node a (Tree a) (Tree a)
     deriving (Read, Eq)
 
 instance Show a => Show (Tree a) where
-    
-
-
+    show = printTree 0 
 
 isSym :: Eq a => Tree a -> Bool
 isSym Empty = error "Empty Tree"
@@ -29,6 +27,10 @@ deleteValue x (Node n l r) | x < n = Node n (deleteValue x l) r
 
 
 
+
+printTree :: Show a => Int -> Tree a -> String
+printTree spaces Empty = replicate spaces ' ' ++ "Empty"
+printTree spaces (Node n l r) = replicate spaces ' ' ++ show n ++ "\n" ++ printTree (spaces + 2) l ++ "\n" ++ printTree (spaces + 2) r
 
 isSym' :: Eq a => Tree a -> Tree a -> Bool
 isSym' Empty Empty = True
@@ -57,13 +59,3 @@ insertTree (Node n l r) (Node n2 l2 r2) | n2 == n = Node n (insertTree l2 l) (in
 minEl :: Tree a -> a
 minEl (Node n Empty _) = n
 minEl (Node n l _) = minEl l
-
-
--- show Empty = ""
-    -- show (Node n Empty Empty) = show n
-    -- show (Node n (Node a l r) Empty) = "    " ++ show n ++ "\n" ++ "   /\n  " ++ show a ++ "     " ++ "\n  /  \\" 
-    --         ++ "\n " ++ show l ++ "   " ++ show r
-    -- show (Node n Empty (Node a l r)) = "    " ++ show n ++ "\n" ++ "  \\  \n  " ++ show a ++ "     " ++ "\n    /  \\" 
-    --         ++ "\n " ++ show l ++ "   " ++ show r
-    -- show (Node n (Node nl al bl) (Node nr ar br)) = "    " ++ show n ++ "\n" ++ "   /  \\ \n  " ++ show nl ++ "     " ++ show nr 
-    --                 ++ "\n  /  \\   /  \\" ++ "\n " ++ show al ++ "   " ++ show bl ++ "  " ++ show ar ++ "   " ++ show br
