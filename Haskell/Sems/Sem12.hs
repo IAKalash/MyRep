@@ -73,15 +73,15 @@ while cond op = do
 
 
 
-words' :: IO String -> [String]
-words' = do
-            word <- getLine
-            if (word /= "")
-                then do
-                    lines <- words'
-                    word : lines
-                else
-                    []
+-- words' :: IO String -> [String]
+-- words' = do
+--             word <- getLine
+--             if (word /= "")
+--                 then do
+--                     lines <- words'
+--                     word : lines
+--                 else
+--                     []
 
 -- reverseWords :: String -> String
 -- reverseWords = unwords . map reverse . words'

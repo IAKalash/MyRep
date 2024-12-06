@@ -9,14 +9,14 @@
                 "limitSymbolsToIncludedHeaders": true
             },
             "includePath": [
-                "D:\\Programming\\C(lang)\\gcc\\include"
+                "C:\\Users\\Ilya\\gcc\\include"
             ],
             "defines": [
                 "_DEBUG",
                 "UNICODE",
                 "_UNICODE"
             ],
-            "compilerPath": "D:\\Programming\\C(lang)\\gcc\\bin\\gcc.exe",
+            "compilerPath": "C:\\Users\\Ilya\\gcc\\bin\\gcc.exe",
             "cStandard": "c11",
             "cppStandard": "c++17",
             "intelliSenseMode": "clang-x64"
