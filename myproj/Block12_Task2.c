@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <malloc.h>
+#include <math.h>
 
 void addEl(int *arr, int root, int num) {
     if (arr[root] >= num) {
@@ -22,42 +23,41 @@ void addEl(int *arr, int root, int num) {
     }
 }
 
+void printTree(int *Tree, int root, FILE *out) {
+    if (Tree[root * 2] != NULL)
+        printTree(Tree, root *2, out);
+    
+    fwrite(&Tree[root], 4, 1, out);
+    
+    if (Tree[root * 2 + 1] != NULL)
+        printTree(Tree, root * 2 + 1, out);
+}
+
 int main(void)
 {
     FILE *in = fopen("input.txt", "rb");
-    freopen("output.txt", "w", stdout);
+    FILE *out = fopen("output.txt", "wb");
 
     int n, num;
     fread(&n, 4, 1, in);
 
-    int *tree = (int *)malloc(4 * (n ^ 2));
+    int *tree = (int *)malloc(4 * (pow(2,n)));
 
-    for (int i = 0; i < n ^ 2 - 1; ++i) {
+    for (int i = 0; i < n * n; ++i) {
         tree[i] = NULL;
     }
 
     fread(&num, 4, 1, in);
 
     tree[1] = num;
-    printf("%d ", num);
 
-    for (int i = 0; i < n - 1; ++i) {
+    for (int j = 0; j < n - 1; ++j) {
         fread(&num, 4, 1, in);
-        printf("%d ", num);
-        fflush(stdout);
         addEl(tree, 1, num);
     }
 
-    printf("   1   ");
-    fflush(stdout);
-
-    printf("\n");
-
-    for (int i = 0; i < n ^ 2 - 1; ++i) {
-        printf("%d ", tree[i]);
-        fflush(stdout);
-    }
+    printTree(tree, 1, out);
 
     fclose(in);
-    fclose(stdout);
+    fclose(out);
 }

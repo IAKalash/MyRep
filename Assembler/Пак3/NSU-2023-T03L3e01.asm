@@ -1,11 +1,14 @@
 	asect	0x00
 	# WRITE YOUR CODE HERE
+	
+	jsr check1
 
 	ldi r3, S
-	st r3, r0
 	inc r3
 	
 	jsr interprete
+	
+	jsr check2
 	
 	ldi r3, S
 	inc r3
@@ -21,6 +24,63 @@ S:	dc	"{f,a,z,q}",0 	# replace by your choice of S for testing
 endinputs>
 result: ds	4
 
+fail:
+	ldi r3, result
+	ldi r0, 3
+	add r0, r3
+	ldi r0, 0b00111111
+	st r3, r0
+	rts
+
+check1:
+	ldi r3, S
+	ldi r0, 123
+	if 
+		ld r3, r1
+		cmp r1, r0
+	is nz
+		jsr fail
+		halt
+	fi
+	clr r1
+	clr r0
+	rts
+	
+check2:
+	ldi r3, S
+	inc r3
+	ldi r0, 44
+	ldi r1, 27
+	ld r3, r2
+	if 
+		cmp r2, r1
+	is pl
+		jsr fail
+		halt
+	fi
+	inc r3
+	while
+		ld r3, r2
+		tst r2
+	stays nz
+		if 
+			cmp r2, r0
+		is nz
+			jsr fail
+			halt
+		fi
+		inc r3
+		ld r3, r2
+		if 
+			cmp r2, r1
+		is pl
+			jsr fail
+			halt
+		fi
+		inc r3
+	wend
+	rts
+
 interprete:
 	while 
 		ldi r2, 96
@@ -35,6 +95,16 @@ interprete:
 		inc r3		
 	wend
 	dec r3
+	if
+		ldi r1, 125
+		ld r3, r0
+		add r2, r0
+		cmp r1, r0
+	is nz
+		jsr fail
+		halt
+	fi
+	clr r1
 	st r3, r1
 	rts
 	
