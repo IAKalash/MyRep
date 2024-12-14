@@ -43,6 +43,9 @@ instance Eq Bin where
 
   (O ex) == End = ex == End
   End == (O ex) = End == ex
+
+  (I ex) == End = False
+  End == (I ex) = False
   
   (I ex1) == (O ex2) = False
   (O ex1) == (I ex2) = False
