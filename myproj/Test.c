@@ -1,34 +1,54 @@
+
 #include <stdio.h>
-#include <malloc.h>
+#include <stdlib.h>
+#include <string.h>
 
-void reverse(int *num)
-{
-    *num = (*num >> 24) | (*num << 24) | (*num >> 8 & 0b00000000000000001111111100000000) | (*num << 8 & 0b00000000111111110000000000000000);
-}
+typedef struct ActorBio {
+    char Name[31];
+    int BirthYear;
+    char Country[11];
+} Bio;
 
-int main(void)
-{
+typedef struct ActorInMovie {
+    char ActorName[31];
+    char MovieName[21];
+} Movie;
+
+int main(void) {
     freopen("input.txt", "r", stdin);
     freopen("output.txt", "w", stdout);
 
-    int a = 0b00000001;
-    a >>= 1;
-    printf("%llx", a);
+    int n, m;
+    scanf("%d", &n);
 
-    fclose(stdin);
+    Bio *table1 = (Bio *)calloc(n, sizeof(Bio));
+    char str1[100], str2[100];
+
+    for (int i = 0; i < n; ++i) {
+        scanf(" \"%[^\"]\" %d \"%[^\"]\"", str1, &table1[i].BirthYear, table1[i].Country);
+        table1[i].Name[0] = '\0'; // Initialize the Name string
+        strcat(table1[i].Name, str1);
+    }
+
+    scanf("%d", &m);
+    Movie *table2 = (Movie *)calloc(m, sizeof(Movie));
+
+    for (int i = 0; i < m; ++i) {
+        scanf(" \"%[^\"]\" \"%[^\"]\"", table2[i].ActorName, table2[i].MovieName);
+    }
+
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < m; ++j) {
+            if (strcmp(table1[i].Name, table2[j].ActorName) == 0) {
+                printf("\"%s\" %d \"%s\" \"%s\" \"%s\"\n", 
+                       table1[i].Name, table1[i].BirthYear, table1[i].Country, 
+                       table2[j].ActorName, table2[j].MovieName);
+            }
+        }
+    }
+
+    free(table1);
+    free(table2);
     fclose(stdout);
-}
-
-int lenL = m - l + 1, lenR = r - m + 1;
-
-int *Left = (int *)malloc(4 * lenL);
-int *Right = (int *)malloc(4 * lenR);
-
-for (int i = 0; i < lenL; ++i)
-{
-    Left[i] = a[l + i];
-}
-for (int i = 0; i < lenR; ++i)
-{
-    Right[i] = a[m + 1 + i];
+    fclose(stdin);
 }
