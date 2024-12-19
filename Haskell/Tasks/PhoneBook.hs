@@ -4,7 +4,7 @@ import Data.Char ( toLower )
 import Data.List ( concat ) 
 import System.Directory
 import Text.Regex.Posix
-import GHC.IO.Handle (hFileSize)
+import Text.Read (readMaybe)
 
 main :: IO()
 main = do
@@ -66,7 +66,7 @@ numCheck book name = do
             putStrLn "\nТакой контакт уже существует. Обновить номер? [Да/Нет]\n"
             check1 book name phNum
         else do
-            let book2 = M.insert name (correctNum phNum) book -------------------
+            let book2 = M.insert name (correctNum phNum) book 
             putStrLn "\nКонтакт успешно добавлен."
             putStrLn "Добавим ещё один? [Да/Нет]\n"
             toMenu book2
@@ -94,7 +94,7 @@ check1 :: M.Map String String -> String -> String -> IO()
 check1 book name phNum = do
         str <- getLine
         if map toLower str == "да" then do
-            let book2 = M.insert name (correctNum phNum) book -------------------
+            let book2 = M.insert name (correctNum phNum) book
             putStrLn "\nКонтакт успешно заменён."
             putStrLn "Добавим ещё один? [Да/Нет]\n"
             toMenu book2
@@ -131,7 +131,7 @@ find book = do
         backToMenu book
     else do
         putStrLn ("\nВот номер контакта " ++ name ++ ":")
-        putStrLn (fromMaybe phNum ++ "\n")
+        putStrLn (correctNum (fromMaybe phNum ++ "\n"))
         putStrLn "Ищем дальше? [Да/Нет]\n"
         backToMenu book
 
@@ -219,9 +219,14 @@ importBook book = do
     ex <- doesFileExist filePath
     if ex then do
         file <- readFile filePath
-        let book2 = M.union book (M.fromList (read file :: [(String, String)]))
-        putStrLn "\nСправочник обновлён\n"
-        menu book2
+        let contents = readMaybe file :: Maybe [(String, String)]
+        if contents == Nothing then do
+            putStrLn "\nНЕКОРРЕКТНЫЙ ФОРМАТ ВВОДА"
+            menu book
+        else do
+            let book2 = M.union book (M.fromList (read file :: [(String, String)]))
+            putStrLn "\nСправочник обновлён\n"
+            menu book2
     else do
         putStrLn "\nТакого файла не существует :("
         putStrLn "Попробуем ещё раз? [Да/Нет]\n"

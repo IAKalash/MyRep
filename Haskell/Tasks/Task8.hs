@@ -9,7 +9,7 @@ isSym Empty = error "Empty Tree"
 isSym (Node n l r) = isSym' l r
 
 buildTree :: Ord a => [a] -> Tree a
-buildTree [] = error "Empty list"
+buildTree [] = Empty
 buildTree xs = buildTree' xs Empty
 
 deleteMin :: (Ord a) => Tree a -> (Tree a, a)
@@ -27,7 +27,6 @@ deleteValue x (Node n l r) | x < n = Node n (deleteValue x l) r
 
 
 
-
 printTree :: Show a => Int -> Tree a -> String
 printTree spaces Empty = replicate spaces ' ' ++ "Empty"
 printTree spaces (Node n l r) = replicate spaces ' ' ++ show n ++ "\n" ++ printTree (spaces + 2) l ++ "\n" ++ printTree (spaces + 2) r
@@ -36,8 +35,7 @@ isSym' :: Eq a => Tree a -> Tree a -> Bool
 isSym' Empty Empty = True
 isSym' Empty Node {} = False
 isSym' Node {} Empty = False
-isSym' (Node n l r) (Node n2 l2 r2) | n == n2 = isSym' l r2 && isSym' r l2
-                                    | otherwise = False
+isSym' (Node _ l r) (Node _ l2 r2) = isSym' l r2 && isSym' r l2
 
 buildTree' :: Ord a => [a] -> Tree a -> Tree a
 buildTree' [] n = n
