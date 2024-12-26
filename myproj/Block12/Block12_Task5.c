@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,8 +32,8 @@ int binsearch(Bio *arr, char *num, int len) {
     return -1;
 }
 
-int cmpMovie(const void *x1, const void *x2) {
-    return (strcmp(((Movie *)x1)->Name, ((Movie *)x2)->Name));
+int cmpBio(const void *x1, const void *x2) {
+    return (strcmp(((Bio *)x1)->Name, ((Bio *)x2)->Name));
 }
 
 int main(void) {
@@ -45,13 +44,12 @@ int main(void) {
     scanf("%d", &n);
 
     Bio *table1 = (Bio *)calloc(n, sizeof(Bio));
-    char str1[100];
 
     for (int i = 0; i < n; ++i) {
-        scanf(" \"%[^\"]\" %d \"%[^\"]\"", str1, &table1[i].BirthYear, table1[i].Country);
-        table1[i].Name[0] = '\0'; 
-        strcat(table1[i].Name, str1);
+        scanf(" \"%[^\"]\" %d \"%[^\"]\"", table1[i].Name, &table1[i].BirthYear, table1[i].Country);
     }
+
+    qsort((void *)table1, n, sizeof(Bio), cmpBio);
 
     scanf("%d", &m);
     Movie *table2 = (Movie *)calloc(m, sizeof(Movie));
@@ -60,13 +58,10 @@ int main(void) {
         scanf(" \"%[^\"]\" \"%[^\"]\"", table2[i].Name, table2[i].MovieName);
     }
 
-    qsort((void *)table2, m, sizeof(Movie), cmpMovie);
-
     for (int j = 0; j < m; ++j) {
         int i = binsearch(table1, table2[j].Name, n);
         if (i != -1) {
-            printf("\"%s\" %d \"%s\" \"%s\"\n", 
-                   table1[i].Name, table1[i].BirthYear, table1[i].Country, table2[j].MovieName);
+            printf("\"%s\" %d \"%s\" \"%s\" \"%s\"\n", table1[i].Name, table1[i].BirthYear, table1[i].Country, table2[j].Name, table2[j].MovieName);
         }
     }
     

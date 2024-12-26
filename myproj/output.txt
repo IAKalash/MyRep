@@ -1,8 +1,8 @@
-"Arnold Schwarzenegger" 1947 "USA" "Total Recall"
-"Arnold Schwarzenegger" 1947 "USA" "Terminator"
-"Jean Reno" 1948 "France" "Leon"
-"Jean Reno" 1948 "France" "Mission: Impossible"
-"Jean Reno" 1948 "France" "Wasabi"
-"Sharon Stone" 1958 "USA" "Basic Instinct"
-"Sharon Stone" 1958 "USA" "Total Recall"
-"Tom Cruise" 1962 "USA" "Mission: Impossible"
+1
+2.71828182845905
+0.367879441171442
+7.38905609893065
+0.135335283236613
+2.68811714181613e+43
+3.72007597602084e-44
+1.20849583696666

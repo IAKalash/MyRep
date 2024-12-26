@@ -1,4 +1,4 @@
-import 
+import Text.Regex.PCRE
 
 getWords :: IO()
 getWords = do
@@ -7,4 +7,4 @@ getWords = do
     print (getWords' file)
 
 getWords' :: String -> [String]
-getWords' content = getAllTextMatches (content =~ "^({([^{}]+|(?1))})$") :: [String]
+getWords' content = getAllTextMatches (content =~ "[^{}]({([^{}]+|(?1))})[^{}}]") :: [String]
