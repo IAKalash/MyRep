@@ -1,16 +1,19 @@
 #include <stdio.h>
 
-int gcd(int a, int b, int *x, int *y) { 
-    if (b == 0) {
+int gcd(int a, int b, int *x, int *y) {
+    if (a == 0) {
         *x = 0;
         *y = 1;
         return b;
     }
-    int x1, y1;
-    int n = gcd(b % a, a, &x1, &y1);
+
+    int x1, y1; 
+    int num = gcd(b % a, a, &x1, &y1);
+
     *x = y1 - (b / a) * x1;
     *y = x1;
-    return n;
+
+    return num;
 }
 
 int main(void)
@@ -23,8 +26,12 @@ int main(void)
 
     for (int i = 0; i < tests; ++i) {
         scanf("%d", &num);
-        gcd(num, mod, &x, &y);
-        printf("%d\n", x);
+        if (gcd(num, mod, &x, &y) != 1) {
+            printf("-1\n");
+        }
+        else {
+            printf("%d\n", (x % mod + mod) % mod);
+        }
     }
 
     fclose(stdin);
