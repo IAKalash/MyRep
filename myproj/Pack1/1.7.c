@@ -4,11 +4,7 @@
 double **create (int m) {
     double **matrix = (double **)calloc(m, sizeof(double *));
     for (int i = 0; i < m; ++i) {
-        double *str = (double *)calloc(m + 1, sizeof(double));
-        for (int j = 0; j <= m; ++j) {
-            str[j] = 0.0;
-        }
-        matrix[i] = str;
+        matrix[i] = (double *)calloc(m + 1, sizeof(double));
     }
     return matrix;
 }
@@ -32,12 +28,14 @@ int main(void)
 
     for(int k = 0; k < m - 1; ++k) {
         for(int i = k; i < m; ++i) {
-            for (int j = m; j >= k; --j) {
-                matrix[i][j] /= matrix[i][k];
-            }
-            if (i != k) {
-                for(int j = 0; j <= m; ++j) {
-                    matrix[i][j] -= matrix[k][j];
+            if (matrix[i][k] != 0) {
+                for (int j = m; j >= k; --j) {
+                    matrix[i][j] /= matrix[i][k];
+                }
+                if (i != k) {
+                    for(int j = 0; j <= m; ++j) {
+                        matrix[i][j] -= matrix[k][j];
+                    }
                 }
             }
         }
@@ -51,8 +49,14 @@ int main(void)
     }
 
     for (int i = 0; i < m; ++i) {
-        printf("%lf\n", res[i]);
+        printf("%0.10f\n", res[i]);
     }
+
+    for (int i = 0; i < m; ++i) {
+        free(matrix[i]);
+    }
+    free(matrix);
+    free(res);
 
     fclose(stdin);
     fclose(stdout);
