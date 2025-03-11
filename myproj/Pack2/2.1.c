@@ -68,8 +68,6 @@ int main(void)
     
     for (int i = 0; i < k; ++i) {
         res = (res + pmult(M[i], pmult(Mi[i], A[i], mul), mul)) % mul;
-        // res = (res + M[i] * Mi[i] * A[i]) % mul;
-        // printf("%lld ", res);
     }
     
     printf("%lld", res);
