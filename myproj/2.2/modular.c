@@ -1,8 +1,8 @@
 #include "modular.h"
 
-int MOD;
+int MOD = 1;
 int pnorm(int num){
-    return (num < 0 ? num % MOD + MOD : num % MOD);
+    return((num % MOD + MOD) % MOD);
 }
 
 int padd(int n1, int n2){
@@ -14,16 +14,18 @@ int psub(int n1, int n2){
 }
 
 int pmul(int n1, int n2){
-    n1 %= MOD;
-    int result = 0;
+    int res = 0;
+    n1 = pnorm(n1);
+    n2 = pnorm(n2);
+
     while (n2 > 0) {
         if (n2 & 1) {
-            result = (result + n1) % MOD;
+            res = (res + n1) % MOD;
         }
-        n1 = (n1 << 1) % MOD;
-        n2 >>= 1;
+        n1 = (n1 * 2) % MOD;
+        n2 = n2 >> 1;
     }
-    return result;
+    return res;
 }
 
 int gcd(int a, int b, int *x, int *y) {

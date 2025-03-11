@@ -20,6 +20,9 @@
         "streambuf": "cpp",
         "type_traits": "cpp",
         "typeinfo": "cpp",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "stdint.h": "c",
+        "assert.h": "c",
+        "modular.h": "c"
     }
 }
