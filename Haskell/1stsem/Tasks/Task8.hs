@@ -2,6 +2,7 @@ data Tree a = Empty | Node a (Tree a) (Tree a)
     deriving (Read, Eq)
 
 instance Show a => Show (Tree a) where
+    show :: Show a => Tree a -> String
     show = printTree 0 
 
 isSym :: Eq a => Tree a -> Bool

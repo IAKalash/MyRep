@@ -1,6 +1,9 @@
 import Control.Monad.State
 import Control.Monad.Writer
 import Control.Monad.Trans.Maybe
+import qualified Data.Map as M
+import Control.Monad.Reader
+
 
 parensMatch :: String -> Bool
 parensMatch s = count == 0
@@ -89,20 +92,25 @@ eval11 (Var _) = lift Nothing
 eval11 (Bin op e1 e2) = do
     x <- eval11 e1
     y <- eval11 e2
+    tell (name op ++ show x ++ " " ++ show y ++ ";")
     case op of
-        Add -> tell "add "
-        Sub -> tell "sub "
-        Mul -> tell "mul "
-        Div -> tell "div "
-    tell (show x ++ " " ++ show y ++ ";")
-    return (apply op x y)
+        Div -> if y == 0
+            then lift Nothing
+            else return (apply op x y)
+        _ -> return (apply op x y)
 eval11 (Let x e1 e2) = lift Nothing
+
+name :: Op -> String
+name Add = "add "
+name Sub = "sub "
+name Mul = "mul "
+name Div = "div "
 
 eval12 :: Expr -> MaybeT (Writer String) Integer
 eval12 (Num n) = return n
--- eval12 (Var x) = do
---     tell ("var " ++ x ++ "is not defined")
---     Nothing 
+eval12 (Var x) = do
+    tell ("var " ++ x ++ " is not defined")
+    MaybeT $ return Nothing
 eval12 (Bin op e1 e2) = do
     x <- eval12 e1
     y <- eval12 e2
@@ -113,5 +121,44 @@ eval12 (Bin op e1 e2) = do
         Div -> tell "div "
     tell (show x ++ " " ++ show y ++ ";")
     return (apply op x y)
--- eval12 (Let x e1 e2) = lift Nothing
+eval12 (Let x e1 e2) = MaybeT $ return Nothing
+
 e = (Bin Add (Bin Add (Num 2) (Num 3)) (Num 1))
+
+type Env = M.Map Name Integer
+
+-- eval13 :: Expr -> ReaderT Env Maybe Integer
+-- eval13 (Num n) = return n
+-- eval13 (Var x) = do
+--     vars <- lift ask
+--     if lookup x vars /= Nothing
+--         then
+--             return $ fromMaybe $ lookup x vars
+--         else
+--             lift Nothing
+
+-- eval13 (Bin op e1 e2) = do
+--     x <- eval13 e1
+--     y <- eval13 e2
+--     case op of
+--         Div -> if y == 0
+--             then lift Nothing
+--             else return (apply op x y)
+--         _ -> return (apply op x y)
+-- eval13 (Let x e1 e2) = lift Nothing
+
+fromMaybe :: Maybe a -> a
+fromMaybe (Just a) = a
+fromMaybe Nothing = error ""
+
+eval14 :: Expr -> MaybeT (Reader Env) Integer
+eval14 (Num n) = return n
+eval14 (Var x) = do
+    env <- lift ask
+    return $ fromMaybe (lookup x env)
+eval14 (Bin op e1 e2) = do
+    x <- eval14 e1
+    y <- eval14 e2
+    return (apply op x y)
+eval14 (Let x e1 e2) = MaybeT $ return Nothing
+
