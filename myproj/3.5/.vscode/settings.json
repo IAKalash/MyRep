@@ -23,6 +23,7 @@
         "stdio.h": "c",
         "stdint.h": "c",
         "assert.h": "c",
-        "modular.h": "c"
+        "modular.h": "c",
+        "array": "cpp"
     }
 }

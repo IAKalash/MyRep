@@ -1,6 +1,0 @@
-gcc -c zlib/*.c
-gcc -c zlib/minizip/unzip.c -D USE_CRYPT
-gcc -c zlib/minizip/ioapi.c -D USE_CRYPT
-gcc -c test.c -I zlib -I zlib/minizip -D USE_CRYPT
-
-gcc -o checked_solution.exe *.o -D USE_CRYPT

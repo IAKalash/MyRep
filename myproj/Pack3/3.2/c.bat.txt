@@ -1,0 +1,8 @@
+gcc -c zlib/minizip/ioapi.c -D USE_CRYPT -I zlib -I zlib/minizip
+gcc -c zlib/minizip/unzip.c -D USE_CRYPT -I zlib -I zlib/minizip
+ar crs libminizip.a unzip.o ioapi.o
+
+gcc -c zlib/*.c -I zlib
+ar crs libz.a *.o
+
+gcc test.c -I zlib -I zlib/minizip -L. -l z -l minizip -o checked_solution

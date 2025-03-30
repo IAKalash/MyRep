@@ -1,90 +1,73 @@
 #include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
+#include <math.h>
 
-// Расширенный алгоритм Евклида для нахождения НОД и коэффициентов Безу
-// Возвращает НОД, а через указатели x и y — коэффициенты: ax + by = НОД(a, b)
-int64_t gcd_extended(int64_t a, int64_t b, int64_t *x, int64_t *y) {
-    if (a == 0) {
-        *x = 0;
-        *y = 1;
-        return b;
-    }
-    int64_t x1, y1;
-    int64_t gcd = gcd_extended(b % a, a, &x1, &y1);
-    *x = y1 - (b / a) * x1;
-    *y = x1;
-    return gcd;
+// Структура для хранения коэффициентов многочлена и границ спана
+typedef struct {
+    double l, r;          // Границы спана [l, r]
+    double x[4], y[4], z[4]; // Коэффициенты для x(t), y(t), z(t): c0, c1, c2, c3
+} Span;
+
+// Производная многочлена p(t) = c0 + c1(t-l) + c2(t-l)^2 + c3(t-l)^3
+double derivative(double t, double l, double c[4]) {
+    double u = t - l;
+    return c[1] + 2 * c[2] * u + 3 * c[3] * u * u;
 }
 
-// Нахождение обратного элемента a по модулю m (a * x ≡ 1 (mod m))
-int64_t mod_inverse(int64_t a, int64_t m) {
-    int64_t x, y;
-    int64_t gcd = gcd_extended(a, m, &x, &y);
-    if (gcd != 1) {
-        return -1; // Обратного элемента не существует
-    }
-    // Убедимся, что x положительный
-    return (x % m + m) % m;
+// Подынтегральная функция: sqrt(dx/dt^2 + dy/dt^2 + dz/dt^2)
+double integrand(double t, Span span) {
+    double dx = derivative(t, span.l, span.x);
+    double dy = derivative(t, span.l, span.y);
+    double dz = derivative(t, span.l, span.z);
+    return sqrt(dx * dx + dy * dy + dz * dz);
 }
 
-// Модульное умножение для больших чисел
-int64_t mod_mul(int64_t a, int64_t b, int64_t m) {
-    a = a % m;
-    b = b % m;
-    int64_t res = 0;
-    while (b > 0) {
-        if (b & 1) {
-            res = (res + a) % m;
-        }
-        a = (a * 2) % m;
-        b = b >> 1;
+// Правило Симпсона для численного интегрирования
+double simpson(double a, double b, int n, Span span) {
+    if (n % 2 != 0) {
+        printf("Ошибка: n должно быть чётным!\n");
+        return 0.0;
     }
-    return res;
+    double h = (b - a) / n;
+    double sum = integrand(a, span) + integrand(b, span);
+
+    for (int i = 1; i < n; i++) {
+        double t = a + i * h;
+        sum += (i % 2 == 0) ? 2 * integrand(t, span) : 4 * integrand(t, span);
+    }
+    return sum * h / 3.0;
 }
 
 int main() {
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
-
-    int k;
-    scanf("%d", &k);
-
-    int64_t *M = (int64_t *)malloc(k * sizeof(int64_t));
-    int64_t *A = (int64_t *)malloc(k * sizeof(int64_t));
-
-    // Читаем модули
-    for (int i = 0; i < k; i++) {
-        scanf("%lld", &M[i]);
+    FILE *fin = fopen("input.txt", "r");
+    FILE *fout = fopen("output.txt", "w");
+    if (!fin || !fout) {
+        printf("Ошибка открытия файлов\n");
+        return 1;
     }
 
-    // Читаем остатки
-    for (int i = 0; i < k; i++) {
-        scanf("%lld", &A[i]);
+    int N;
+    fscanf(fin, "%d", &N);
+    Span spans[1000]; // Максимум 1000 спанов
+
+    // Чтение данных
+    for (int i = 0; i < N; i++) {
+        fscanf(fin, "%lf %lf", &spans[i].l, &spans[i].r);
+        for (int j = 0; j < 4; j++) fscanf(fin, "%lf", &spans[i].x[j]);
+        for (int j = 0; j < 4; j++) fscanf(fin, "%lf", &spans[i].y[j]);
+        for (int j = 0; j < 4; j++) fscanf(fin, "%lf", &spans[i].z[j]);
     }
 
-    // Вычисляем общий модуль M
-    int64_t M_prod = 1;
-    for (int i = 0; i < k; i++) {
-        M_prod = mod_mul(M_prod, M[i], 1000000000000000000LL); // Ограничение 10^17
+    // Вычисление общей длины
+    double total_length = 0.0;
+    int n = 100; // Число разбиений для правила Симпсона (чётное)
+    for (int i = 0; i < N; i++) {
+        total_length += simpson(spans[i].l, spans[i].r, n, spans[i]);
     }
 
-    // Вычисляем X
-    int64_t X = 0;
-    for (int i = 0; i < k; i++) {
-        int64_t P_i = M_prod / M[i]; // Частный модуль
-        int64_t Q_i = mod_inverse(P_i, M[i]); // Обратный элемент
-        int64_t term = mod_mul(A[i], P_i, M_prod); // A_i * P_i
-        term = mod_mul(term, Q_i, M_prod); // A_i * P_i * Q_i
-        X = (X + term) % M_prod;
-    }
+    // Вывод результата с высокой точностью
+    fprintf(fout, "%.20f\n", total_length);
 
-    // Выводим минимальное неотрицательное X
-    printf("%lld\n", X);
-
-    free(M);
-    free(A);
-    fclose(stdin);
-    fclose(stdout);
+    fclose(fin);
+    fclose(fout);
     return 0;
 }
