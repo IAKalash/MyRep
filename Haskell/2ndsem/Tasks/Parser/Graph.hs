@@ -1,141 +1,124 @@
+module Graph where
 import Text.ParserCombinators.Parsec
-import Data.Char
+import Data.Char (isAlphaNum)
 
 data Graph = Digraph ID [Node] [Edge] [Attr]
-        deriving (Show)
+    deriving (Show)
+
 data Node = Node ID [Attr]
-        deriving (Show)
+    deriving (Show)
+
 data Edge = Edge ID ID [Attr]
-        deriving (Show)
+    deriving (Show)
+
 data Attr = Attr ID ID
-        deriving (Show)
+    deriving (Show)
+
 type ID = String
 
-identifier :: Parser String
-identifier = many1 (alphaNum <|> oneOf "_") -- Поддержка символа "_" для имён вроде "graph_name"
+getName :: Parser String
+getName = many1 (alphaNum <|> char '_')
 
--- Парсер всего графа
+skipSpaces :: Parser ()
+skipSpaces = skipMany space
+
 graph :: Parser Graph
 graph = do
-    string "digraph" >> spaces
-    graphName <- identifier
-    spaces >> string "{" >> spaces
-    (nodes, edges, attrs) <- stmtList
-    spaces >> string "}"
-    return (Digraph graphName nodes edges attrs)
+    skipSpaces
+    string "digraph"
+    skipSpaces
+    name <- getName
+    skipSpaces
+    char '{'
+    skipSpaces
+    (nodes, edges, attrs) <- getStmts
+    skipSpaces
+    char '}'
+    skipSpaces
+    return (Digraph name nodes edges attrs)
 
--- Парсер списка утверждений (stmt_list)
-stmtList :: Parser ([Node], [Edge], [Attr])
-stmtList = do
-    stmts <- sepEndBy stmt (optional (char ';') >> spaces)
-    let (nodes, edges, attrs) = foldl splitStmt ([], [], []) stmts
-    return (nodes, edges, attrs)
+getStmts :: Parser ([Node], [Edge], [Attr])
+getStmts = do
+    skipSpaces
+    stmts <- many (do
+        stmt <- getStmt
+        skipSpaces
+        return stmt)
+    let nodes = concat [ns | (ns, _, _) <- stmts]
+        edges = concat [es | (_, es, _) <- stmts]
+        attrs = concat [as | (_, _, as) <- stmts]
+        edgeNodeIds = [id | Edge from to _ <- edges, id <- [from, to]]
+        uniqueIds = foldr (\id acc -> if id `elem` acc then acc else id : acc) [] edgeNodeIds
+        extraNodes = [Node id [] | id <- uniqueIds, not (any (\(Node id' _) -> id' == id) nodes)]
+        allNodes = nodes ++ extraNodes
+    return (allNodes, edges, attrs)
 
--- Разделение утверждений на вершины, рёбра и атрибуты
-splitStmt :: ([Node], [Edge], [Attr]) -> Either (Either Node Edge) Attr -> ([Node], [Edge], [Attr])
-splitStmt (ns, es, as) stmt = case stmt of
-    Left (Left node) -> (node:ns, es, as)
-    Left (Right edge) -> (ns, edge:es, as)
-    Right attr -> (ns, es, attr:as)
+getStmt :: Parser ([Node], [Edge], [Attr])
+getStmt = do
+    skipSpaces
+    key <- getName
+    skipSpaces
+    next <- many (char '=')
+    if not (null next) then do
+        skipSpaces
+        value <- getName
+        skipSpaces
+        optional (char ';')
+        return ([], [], [Attr key value])
+    else do
+        nextArrow <- many (string "->")
+        if not (null nextArrow) then do
+            skipSpaces
+            result <- addEdges key
+            skipSpaces
+            optional (char ';')
+            return result
+        else do
+            attrs <- getAttrs
+            skipSpaces
+            optional (char ';')
+            return ([Node key attrs], [], [])
 
--- Парсер одного утверждения (stmt)
-stmt :: Parser (Either (Either Node Edge) Attr)
-stmt = do
-    spaces
-    try (do
-        attr <- attrStmt
-        return (Right attr))
-    <|> try (do
-        edge <- edgeStmt
-        return (Left (Right edge)))
-    <|> do
-        node <- nodeStmt
-        return (Left (Left node))
+addEdges :: String -> Parser ([Node], [Edge], [Attr])
+addEdges from = do
+    skipSpaces
+    to <- getName
+    skipSpaces
+    next <- many (string "->")
+    if null next then do
+        attrs <- getAttrs
+        return ([], [Edge from to attrs], [])
+    else do
+        attrs <- getAttrs
+        skipSpaces
+        (_, moreEdges, _) <- addEdges to
+        return ([], Edge from to attrs : moreEdges, [])
 
--- Парсер атрибута графа (ID = ID)
-attrStmt :: Parser Attr
-attrStmt = do
-    key <- identifier
-    spaces >> char '=' >> spaces
-    value <- identifier
-    return (Attr key value)
+getAttrs :: Parser [Attr]
+getAttrs = do
+    next <- many (char '[')
+    if null next then return []
+    else do
+        skipSpaces
+        attrs <- sepEndBy addAttr (char ',' <|> char ';')
+        skipSpaces
+        char ']'
+        return attrs
 
--- Парсер вершины (node_stmt)
-nodeStmt :: Parser Node
-nodeStmt = do
-    nodeId <- identifier
-    attrs <- option [] attrList
-    return (Node nodeId attrs)
+addAttr :: Parser Attr
+addAttr = do
+    skipSpaces
+    key <- getName
+    skipSpaces
+    char '='
+    skipSpaces
+    Attr key <$> getName
 
--- Парсер ребра (edge_stmt)
-edgeStmt :: Parser Edge
-edgeStmt = do
-    fromId <- identifier
-    spaces >> string "->" >> spaces
-    toId <- identifier
-    attrs <- option [] attrList
-    moreEdges <- optionMaybe edgeRHS
-    case moreEdges of
-        Nothing -> return (Edge fromId toId attrs)
-        Just nextEdge -> do
-            let Edge _ nextTo nextAttrs = nextEdge
-            return (Edge fromId toId attrs) -- Возвращаем только первое ребро, остальные обрабатываются в edgeRHS
-
--- Парсер цепочки рёбер (edgeRHS)
-edgeRHS :: Parser Edge
-edgeRHS = do
-    spaces >> string "->" >> spaces
-    toId <- identifier
-    attrs <- option [] attrList
-    moreEdges <- optionMaybe edgeRHS
-    case moreEdges of
-        Nothing -> return (Edge toId toId attrs) -- Заглушка для последнего ребра
-        Just nextEdge -> return (Edge toId (getEdgeTo nextEdge) attrs)
-    where
-        getEdgeTo (Edge _ to _) = to
-
--- Парсер списка атрибутов (attr_list)
-attrList :: Parser [Attr]
-attrList = do
-    char '[' >> spaces
-    attrs <- sepEndBy attr (char ',' <|> char ';') -- Поддержка разделителей , и ;
-    spaces >> char ']'
-    return attrs
-
--- Парсер одного атрибута (a_list)
-attr :: Parser Attr
-attr = do
-    spaces
-    key <- identifier
-    spaces >> char '=' >> spaces
-    value <- identifier
-    return (Attr key value)
-
--- Точка входа для тестирования
 main :: IO ()
 main = do
-    putStrLn "\nДобро пожаловать в парсер графов DOT!!!"
-    putStrLn "Читаем файл graph.txt...\n"
     text <- readFile "graph.txt"
-    let result = parse graph "" text
-    case result of
-        Left e -> do
-            putStrLn "Ой, что-то пошло не так :("
-            print e
+    case parse graph "" text of
+        Left err -> print err
         Right g -> do
-            putStrLn "Граф успешно прочитан:"
+            putStrLn "Read graph:"
             print g
-            putStrLn "\nКрасивый, правда? Хотите ещё раз? [Да/Нет]\n"
-            checkAgain
-
--- Рекурсивная проверка для повторного запуска
-checkAgain :: IO ()
-checkAgain = do
-    str <- getLine
-    if map toLower str == "да" then do
-        main
-    else if map toLower str == "нет" then do
-        putStrLn "\nДо встречи! Не забывайте свои графы :)\n"
-    else do
-        putStrLn "\nНекорректный ввод. Попробуйте ещё раз. [Да/Нет]\n"
-        checkAgain

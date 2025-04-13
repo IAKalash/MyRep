@@ -1,2 +1,0 @@
-gcc -c core.c -o core.o
-gcc -shared -o core.dll core.o -Wl,--out-implib,core.lib

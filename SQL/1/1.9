@@ -1,0 +1,4 @@
+SELECT round(avg(PRICE),1) as AVG,
+round(avg((PRICE * PRICE)) - (avg(PRICE) * avg(PRICE)), 1) AS VARIANCE
+FROM PRODUCT
+WHERE WARE LIKE "Meat"

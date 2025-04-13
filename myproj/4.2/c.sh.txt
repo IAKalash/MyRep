@@ -1,0 +1,3 @@
+gcc -c matrixsqr.c -O2 -I.
+gcc -c main.c -O2 -I.
+gcc main.o matrixsqr.o -L. -lopenblas -o checked_solution
