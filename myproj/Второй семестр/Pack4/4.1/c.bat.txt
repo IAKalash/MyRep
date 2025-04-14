@@ -1,0 +1,2 @@
+gcc -c integerset.c -o integerset.o
+gcc -shared -o integerset.dll integerset.o -Wl,--out-implib,integerset.lib
