@@ -1,0 +1,26 @@
+        1
+
+RESERVED_TICKETS : 500
+-----------------------
+SOLD_TICKETS : 300
+-----------------------
+RETURNED_TICKETS : 10   
+-----------------------
+BEST_CASHIER : kate
+-----------------------
+EXTRA_FIELD : test
+        1
+
+        2
+
+ANOTHER_FIELD : value
+-----------------------
+NEW_FIELD : old
+-----------------------
+FILES_OF_CODE : 100
+-----------------------
+LINES_OF_CODE : 100000
+-----------------------
+LAST FIELD : 145
+        2
+

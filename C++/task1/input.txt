@@ -1,0 +1,10 @@
+reserved_tickets : 500
+sold_tickets : 300
+returned_tickets : 10   
+best_cashier : Kate
+extra_field : test
+another_field : value
+new_field : old
+files_of_code : 100
+lines_of_code : 100000
+last field : 145
