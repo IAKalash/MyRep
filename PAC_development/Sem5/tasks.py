@@ -2,13 +2,12 @@ import os
 import cv2
 
 def shownails(image, mask):
-    cv2.imshow('Image', image)
-    cv2.imshow('Mask', mask)
+    concat = cv2.vconcat([image, mask])
+    cv2.imshow('Image', concat)
 
     cv2.waitKey(0)
 
     cv2.destroyWindow('Image')
-    cv2.destroyWindow('Mask')
 
 
 def contours(image, mask):
@@ -20,23 +19,42 @@ def contours(image, mask):
     cv2.waitKey(0)
     cv2.destroyWindow('Image+')
 
+def showVideo():
+    cap = cv2.VideoCapture("./Запись экрана от 2025-10-09 09-55-19.webm")
 
-images = os.listdir("./images")
+    while True:
+        _, frame = cap.read()
+        if frame is not None:
+            resize = cv2.resize(frame, (1000, 500))
 
-for i in images:
-    im = cv2.imread(os.path.join("./images", i))
-    msk = cv2.imread(os.path.join("./labels", i))
+        cv2.imshow('Video', cv2.cvtColor(resize, cv2.COLOR_BGR2GRAY))
 
-    #task2:
-    # shownails(im, msk)
+        if cv2.waitKey(1) == ord('q'): 
+            break
 
-
-    # task3:
-    # contours(im, msk)
+    cap.release()
 
 
-    #task4:
+def main():
+
+    images = os.listdir("./images")
+
+    for i in images:
+        im = cv2.imread(os.path.join("./images", i))
+        msk = cv2.imread(os.path.join("./labels", i))
+
+
+        #task2:
+        shownails(im, msk)
+
+
+        # task3:
+        # contours(im, msk)
+
+
+    # task4:
+    # showVideo()
     
+    cv2.destroyAllWindows()
 
-
-cv2.destroyAllWindows()
+main()

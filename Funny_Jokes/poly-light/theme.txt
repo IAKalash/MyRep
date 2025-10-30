@@ -1,0 +1,58 @@
+# Global properties
+title-text: "Ich bin ein Patriot!"
+desktop-image: "kolovrat.jpg"
+desktop-color: "#34ff00"
+terminal-font: "dejavu48.pf2"
+terminal-box: "terminal_box_*.png"
+terminal-left: "0"
+terminal-top: "0"
+terminal-width: "150%"
+terminal-height: "150%"
+terminal-border: "3"
+
+# Boot menu
++ boot_menu {
+    left = 50%
+    top = 50%
+    width = 50%
+    height = 50%
+  item_font = "dejavu48.pf2"
+  item_color = "#ff1082"
+  selected_item_color = "#3c291b"
+    item_height = 80
+    item_spacing = 10
+  item_pixmap_style = "item_*.png"
+  selected_item_pixmap_style = "selected_item_*.png"
+  item_align = "center"
+   item_padding = 10
+}
+
+# Countdown message
++ label {
+  left = 0
+  top = 85%
+  width = 100%
+  align = "center"
+  id = "__timeout__"
+  # EN
+  # text = "Start in %d Sekunden."
+  # RU
+  # text = "Автоматичне завантаження розпочнеться через %d сек."
+  color = "#00fff7"
+  font = "dejavu48.pf2"
+}
+
+# Navigation keys hint
++ label {
+  left = 0
+  top = 90%
+  width = 100%
+  align = "center"
+  # EN
+  # text = "System mit ↑ und ↓ auswählen und mit Enter bestätigen."
+  # RU
+  # text = "Використовуйте ↑ та ↓ для вибору, Enter для підтвердження"
+  color = "#ff0000"
+  font = "dejavu48.pf2"
+}
+

@@ -1,0 +1,4 @@
+sample.bmp
+5
+3
+res.bmp

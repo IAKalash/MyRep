@@ -1,0 +1,32 @@
+vasya kolya petya sasha misha olga
+sasha vasya cool123 petya dima lena
+cool123 kolya anya boris
+kolya cool123 vasya misha dima
+petya sasha vasya olga lena anya
+misha vasya kolya olga boris dima
+olga petya misha lena anya boris
+dima sasha cool123 kolya misha lena
+lena sasha petya olga dima anya
+anya cool123 petya olga lena boris
+boris cool123 misha olga anya dima
+
+2014-10-19T07:45:00 misha Доброе утро, друзья!
+2014-10-19T09:15:00 olga Пора на работу...
+2014-10-19T10:30:00 dima Сегодня выходной? Нет :(
+2014-10-19T12:00:00 lena Красивый день на улице.
+2014-10-19T14:20:00 anya Читаю книгу.
+2014-10-19T16:45:00 boris Играю в футбол.
+2014-10-20T07:30:00 misha Новый день, новые возможности!
+2014-10-20T08:00:00 vasya Блин, сегодня опять понедельник :(
+2014-10-20T08:05:00 cool123 Ура, понедельник!!!
+2014-10-20T08:39:00 kolya Какой сегодня день?
+2014-10-20T09:10:00 olga Кофе спасает.
+2014-10-20T10:25:00 dima Работаю над проектом.
+2014-10-20T11:50:00 lena Обеденный перерыв.
+2014-10-20T13:15:00 anya Встреча с друзьями.
+2014-10-20T15:40:00 boris Тренировка завершена.
+2014-10-20T17:05:00 petya Домой!
+2014-10-20T18:30:00 sasha Вечерний фильм.
+2014-10-21T08:00:00 vasya Уже вторник?
+2014-10-21T09:45:00 cool123 Продолжаем радоваться!
+2014-10-21T11:20:00 kolya Вопрос дня: почему так быстро время летит?
